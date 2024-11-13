@@ -1,0 +1,3 @@
+
+ALTER TABLE users
+    CHANGE COLUMN username login VARCHAR(255) NOT NULL;

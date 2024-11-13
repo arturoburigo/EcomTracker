@@ -15,7 +15,4 @@ public class CategoryRegisterData {
     @Size(max = 30, message = "Name can't be more than 30 letters")
     private String name;
 
-    public CategoryRegisterData(String name) {
-        this.name = name;
-    }
 }

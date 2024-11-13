@@ -9,7 +9,7 @@ COPY . /app
 RUN mvn clean package -DskipTests
 
 # Use OpenJDK for the runtime environment
-FROM openjdk:22-oracle
+FROM openjdk:8-oracle
 COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "/app.jar"]

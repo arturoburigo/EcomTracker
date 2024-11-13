@@ -47,6 +47,7 @@ public class CategoriesController {
     public ResponseEntity<GetCategoriesDetail> deleteCategory (@PathVariable Long id) {
         Categories category = categoriesRepository.getReferenceById(id);
         category.inactivate();
+        categoriesRepository.save(category);
 
         return ResponseEntity.noContent().build();
     }
