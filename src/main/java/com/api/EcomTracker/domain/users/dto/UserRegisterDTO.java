@@ -10,8 +10,11 @@ import javax.validation.constraints.NotBlank;
 @Setter
 @NoArgsConstructor
 public class UserRegisterDTO {
-    @NotBlank(message = "Login is mandatory")
-    private String login;
+    @NotBlank(message = "Email is mandatory")
+    private String email;
+
+    @NotBlank(message = "Username is mandatory")
+    private String username;
 
     @NotBlank(message = "Password is mandatory")
     private String password;

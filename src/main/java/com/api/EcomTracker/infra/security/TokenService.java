@@ -23,6 +23,8 @@ public class TokenService {
             return JWT.create()
                     .withIssuer("API EcomTracker")
                     .withSubject(users.getUsername())
+                    .withClaim("email", users.getEmail())    // Add email to token
+                    .withClaim("role", users.getRole().getName().toString())  // Add role to token
                     .withExpiresAt(dateExpiration())
                     .sign(algorithm);
         } catch (JWTCreationException exception) {
@@ -39,13 +41,27 @@ public class TokenService {
                     .verify(token)
                     .getSubject();
         } catch (JWTVerificationException exception) {
-            throw new RuntimeException("Could not verify token", exception);
+            throw new RuntimeException("Invalid or expired token", exception);
+        }
+    }
+
+    public String getEmailFromToken(String token) {
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(secret);
+            return JWT.require(algorithm)
+                    .withIssuer("API EcomTracker")
+                    .build()
+                    .verify(token)
+                    .getClaim("email")
+                    .asString();
+        } catch (JWTVerificationException exception) {
+            throw new RuntimeException("Invalid or expired token", exception);
         }
     }
 
     private Date dateExpiration() {
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime expirationTime = now.plusHours(2);
-        return Date.from(expirationTime.toInstant(ZoneOffset.of("-03:00")));
+        return Date.from(LocalDateTime.now()
+                .plusHours(2)
+                .toInstant(ZoneOffset.of("-03:00")));
     }
 }

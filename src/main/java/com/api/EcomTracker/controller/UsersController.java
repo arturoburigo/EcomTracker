@@ -24,7 +24,6 @@ import java.net.URI;
 @RestController
 @RequestMapping("/users")
 public class UsersController {
-
     @Autowired
     private UsersRepository repository;
 
@@ -60,13 +59,22 @@ public class UsersController {
         Roles role = rolesRepository.findById(data.getRoleId())
                 .orElseThrow(() -> new RuntimeException("Role not found"));
 
+        // Ensure only ADMIN role can be created through this endpoint
+        if (!role.getName().equals(Roles.RoleName.ADMIN)) {
+            return ResponseEntity.badRequest()
+                    .body(new ErrorResponse(
+                            "Invalid Role",
+                            "This endpoint can only be used to create admin users"
+                    ));
+        }
+
         return registerUser(data, role.getName(), uriBuilder);
     }
 
     private ResponseEntity<?> registerUser(UserRegisterDTO data, Roles.RoleName defaultRole, UriComponentsBuilder uriBuilder) {
         try {
             // Validate if user already exists
-            if (repository.existsByLogin(data.getLogin())) {
+            if (repository.existsByEmail(data.getEmail())) {
                 return ResponseEntity.badRequest()
                         .body(new ErrorResponse(
                                 "Registration failed",
@@ -81,7 +89,7 @@ public class UsersController {
             // Create new user
             Users user = new Users(
                     null,
-                    data.getLogin(),
+                    data.getEmail(),
                     passwordEncoder.encode(data.getPassword()),
                     role
             );
