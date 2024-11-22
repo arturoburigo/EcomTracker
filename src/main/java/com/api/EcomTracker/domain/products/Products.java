@@ -48,7 +48,12 @@ public class Products {
         this.category = category; // Now set category correctly
     }
 
-    public void inactivate(){
-        this.active = false;
+
+    public void updateQuantity(Integer newQuantity) {
+        if (newQuantity < 0) {
+            throw new IllegalArgumentException("Quantity cannot be negative");
+        }
+        this.quantity = newQuantity;
     }
+
 }

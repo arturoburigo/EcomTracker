@@ -4,8 +4,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -19,6 +17,7 @@ public class OrderResponseDTO {
     private String username;
     private BigDecimal amount;
     private Integer quantity;
+    private OrderStatusDTO status;
 
     public OrderResponseDTO(Orders order) {
         this.id = order.getId();
@@ -27,5 +26,6 @@ public class OrderResponseDTO {
         this.username = order.getUser().getUsername();
         this.amount = order.getAmount();
         this.quantity = order.getQuantity();
+        this.status = order.getStatus();
     }
 }
