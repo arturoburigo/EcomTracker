@@ -25,7 +25,7 @@
 
         @Autowired
         private TokenService tokenService;
-    
+
         @PostMapping
         public ResponseEntity<TokenJWTData> login(@RequestBody @Valid AuthDTO data) {
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(data.getEmail(), data.getPassword());

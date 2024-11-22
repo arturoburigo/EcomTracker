@@ -70,7 +70,7 @@ public class OrderService {
                                     .setQuantity((long) orderRequest.getQuantity())
                                     .setPriceData(
                                             SessionCreateParams.LineItem.PriceData.builder()
-                                                    .setCurrency("usd")
+                                                    .setCurrency("brl")
                                                     .setUnitAmount(product.getPrice()
                                                             .multiply(BigDecimal.valueOf(100)).longValue())
                                                     .setProductData(
