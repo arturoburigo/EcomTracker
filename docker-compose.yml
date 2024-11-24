@@ -31,6 +31,8 @@ services:
       SPRING_JPA_SHOW_SQL: "true"
       SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL: "true"
       API_SECURITY_TOKEN_SECRET: 1234567
+      STRIPE_API_KEY: sk_test_51Nldf0Jhg2zvdVu1i7UYANTwW5AvtxUqH2H1enzFu1iqvol6sb0ryeM9SsKYLq4oEJpaOSsP7E4gjqFNawjh5wCL001JGo1nUU
+      STRIPE_WEBHOOK_SECRET: whsec_17d7870013fe8c584b87aa1c46a1df5eed15d760d8a86d56aafd85b0d30d09c5
     ports:
       - "8080:8080"
     depends_on:
@@ -38,6 +40,15 @@ services:
         condition: service_healthy
     networks:
       - app-network
+
+  stripe-cli:
+    image: stripe/stripe-cli
+    container_name: stripe-cli-ecomtracker
+    command: "listen --api-key sk_test_51Nldf0Jhg2zvdVu1i7UYANTwW5AvtxUqH2H1enzFu1iqvol6sb0ryeM9SsKYLq4oEJpaOSsP7E4gjqFNawjh5wCL001JGo1nUU --forward-to app:8080/webhook/stripe"
+    networks:
+      - app-network
+    depends_on:
+      - app
 
 volumes:
   db_data:
