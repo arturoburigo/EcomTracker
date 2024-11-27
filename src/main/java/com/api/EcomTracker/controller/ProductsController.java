@@ -5,11 +5,15 @@ import com.api.EcomTracker.domain.categories.CategoriesRepository;
 import com.api.EcomTracker.domain.categories.GetAllCategories;
 import com.api.EcomTracker.domain.categories.GetCategoriesDetail;
 import com.api.EcomTracker.domain.products.*;
+import com.api.EcomTracker.errors.ErrorResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -63,6 +67,68 @@ public class ProductsController {
         );
 
         return ResponseEntity.ok(dtoPage);
+    }
+
+
+    @PutMapping("/{id}")
+    @Transactional
+    public ResponseEntity<?> updateProductQuantity(
+            @PathVariable Long id,
+            @RequestBody @Valid ProductUpdateData data,
+            Authentication authentication) {
+
+        if (!authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new ErrorResponse(
+                            "Access denied",
+                            "Only administrators can update product quantity"
+                    ));
+        }
+
+        try {
+            Products product = productsRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Product not found"));
+
+            product.updateQuantity(data.getQuantity());
+
+            return ResponseEntity.ok(new GetProductsDetails(product));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest()
+                    .body(new ErrorResponse(
+                            "Update failed",
+                            e.getMessage()
+                    ));
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    @Transactional
+    public ResponseEntity<?> deleteProduct(
+            @PathVariable Long id,
+            Authentication authentication) {
+
+        if (!authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new ErrorResponse(
+                            "Access denied",
+                            "Only administrators can delete products"
+                    ));
+        }
+
+        try {
+            Products product = productsRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Product not found"));
+
+            product.updateActive(false);
+
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest()
+                    .body(new ErrorResponse(
+                            "Delete failed",
+                            e.getMessage()
+                    ));
+        }
     }
 
 }

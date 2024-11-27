@@ -36,7 +36,6 @@ public class Products {
     @JoinColumn(name = "category_id")
     private Categories category;
 
-    // Remove category from constructor
     public Products(ProductsRegisterData data, Categories category) {
         this.name = data.getName();
         this.description = data.getDescription();
@@ -45,9 +44,8 @@ public class Products {
         this.price = data.getPrice();
         this.quantity = data.getQuantity();
         this.active = true;
-        this.category = category; // Now set category correctly
+        this.category = category;
     }
-
 
     public void updateQuantity(Integer newQuantity) {
         if (newQuantity < 0) {
@@ -56,4 +54,7 @@ public class Products {
         this.quantity = newQuantity;
     }
 
+    public void updateActive(Boolean active) {
+        this.active = active;
+    }
 }
