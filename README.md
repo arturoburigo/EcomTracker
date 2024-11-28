@@ -1,0 +1,2 @@
+O EcomTracker é um sistema focado no gerenciamento eficiente de pagamentos e estoque. As transações financeiras são processadas com segurança por meio da integração com a API Stripe. Além disso, o sistema ajusta automaticamente a quantidade de produtos no estoque após cada compra registrada.
+Ele também oferece suporte à gestão de usuários com diferentes níveis de acesso, como administradores e usuários comuns, permitindo o cadastro e a exclusão de produtos diretamente no backend.
