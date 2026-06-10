@@ -35,13 +35,16 @@ public class OrderService {
         Product product = productService.findById(request.getProductId());
         if (!product.hasStockFor(request.getQuantity())) {
             throw new BusinessException(
-                    String.format("Insufficient stock. Available quantity: %d", product.getQuantity()));
+                    String.format(
+                            "Insufficient stock. Available quantity: %d", product.getQuantity()));
         }
 
         product.decreaseStock(request.getQuantity());
 
         BigDecimal totalPrice = calculateTotalPrice(product, request.getQuantity());
-        Order order = orderRepository.save(new Order(product, customer, totalPrice, request.getQuantity()));
+        Order order =
+                orderRepository.save(
+                        new Order(product, customer, totalPrice, request.getQuantity()));
 
         String checkoutUrl = stripeCheckoutService.createCheckoutSession(order);
         return new CheckoutResponse(order.getId(), checkoutUrl);

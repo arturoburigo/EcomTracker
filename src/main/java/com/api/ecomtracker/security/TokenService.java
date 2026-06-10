@@ -44,11 +44,7 @@ public class TokenService {
 
     public String getSubject(String token) {
         try {
-            return JWT.require(algorithm())
-                    .withIssuer(issuer)
-                    .build()
-                    .verify(token)
-                    .getSubject();
+            return JWT.require(algorithm()).withIssuer(issuer).build().verify(token).getSubject();
         } catch (JWTVerificationException exception) {
             throw new InvalidTokenException("Invalid or expired token", exception);
         }

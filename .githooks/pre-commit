@@ -1,0 +1,17 @@
+#!/bin/sh
+# Pre-commit hook: blocks the commit if the code violates the linter rules.
+# Enable it once with: git config core.hooksPath .githooks
+
+echo "Running lint checks (Spotless + Checkstyle)..."
+
+./mvnw -q spotless:check checkstyle:check
+status=$?
+
+if [ $status -ne 0 ]; then
+  echo ""
+  echo "Lint check failed. Fix the violations before committing."
+  echo "Tip: './mvnw spotless:apply' fixes formatting automatically."
+  exit 1
+fi
+
+echo "Lint checks passed."

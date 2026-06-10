@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/webhook")
 public class StripeWebhookController {
 
-    private static final Logger logger = LoggerFactory.getLogger(StripeWebhookController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(StripeWebhookController.class);
 
     private static final String CHECKOUT_COMPLETED_EVENT = "checkout.session.completed";
 
@@ -41,7 +41,7 @@ public class StripeWebhookController {
         try {
             event = Webhook.constructEvent(payload, signature, stripeProperties.getWebhookSecret());
         } catch (SignatureVerificationException exception) {
-            logger.warn("Rejected webhook with invalid signature", exception);
+            LOGGER.warn("Rejected webhook with invalid signature", exception);
             return ResponseEntity.badRequest().build();
         }
 
@@ -52,20 +52,19 @@ public class StripeWebhookController {
     }
 
     private void handleCheckoutCompleted(Event event) {
-        Session session =
-                (Session) event.getDataObjectDeserializer().getObject().orElse(null);
+        Session session = (Session) event.getDataObjectDeserializer().getObject().orElse(null);
         if (session == null) {
-            logger.warn("Could not deserialize checkout session from event {}", event.getId());
+            LOGGER.warn("Could not deserialize checkout session from event {}", event.getId());
             return;
         }
 
         String orderId = session.getMetadata().get(ORDER_ID_METADATA_KEY);
         if (orderId == null) {
-            logger.warn("No orderId found in session metadata for event {}", event.getId());
+            LOGGER.warn("No orderId found in session metadata for event {}", event.getId());
             return;
         }
 
         orderService.markAsPaid(Long.parseLong(orderId));
-        logger.info("Order {} marked as paid", orderId);
+        LOGGER.info("Order {} marked as paid", orderId);
     }
 }

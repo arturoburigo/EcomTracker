@@ -48,7 +48,8 @@ public class ProductController {
     @GetMapping
     public ResponseEntity<Page<ProductSummaryResponse>> getAllProducts(
             @PageableDefault(sort = "name") Pageable pageable) {
-        return ResponseEntity.ok(productService.listActive(pageable).map(ProductSummaryResponse::new));
+        return ResponseEntity.ok(
+                productService.listActive(pageable).map(ProductSummaryResponse::new));
     }
 
     @PutMapping("/{id}")

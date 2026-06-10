@@ -1,14 +1,13 @@
-# Use Maven to build the project
-FROM maven:3.9-eclipse-temurin-22-alpine AS build
+# Build stage
+FROM maven:3.9-eclipse-temurin-17-alpine AS build
 WORKDIR /app
 
-# Copy the entire project directory to /app
 COPY . /app
 
-# Package the application
-RUN mvn clean package -DskipTests
+# Lint runs in CI and in the pre-commit hook; the Docker build only packages.
+RUN mvn clean package -DskipTests -Dspotless.check.skip=true -Dcheckstyle.skip=true
 
-# Use OpenJDK for the runtime environment
+# Runtime stage
 FROM openjdk:8-oracle
 COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8080
