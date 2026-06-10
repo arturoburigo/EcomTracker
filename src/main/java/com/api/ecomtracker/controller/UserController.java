@@ -8,6 +8,7 @@ import com.api.ecomtracker.service.UserService;
 import java.net.URI;
 import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,6 +32,7 @@ public class UserController {
     }
 
     @PostMapping("/register/admin")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserResponse> registerAdmin(
             @RequestBody @Valid AdminRegisterRequest request, UriComponentsBuilder uriBuilder) {
         return created(userService.registerAdmin(request), uriBuilder);
